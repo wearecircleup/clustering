@@ -12,7 +12,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes restringir esto a dominios específicos
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -98,6 +98,10 @@ def process_data(df):
         return X_selected
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error al procesar los datos: {str(e)}")
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(user_data: UserData):
