@@ -103,6 +103,12 @@ def process_data(df):
 async def root():
     return {"message": "Hello World"}
 
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(user_data: UserData):
     """
