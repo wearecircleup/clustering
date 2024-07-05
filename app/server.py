@@ -8,15 +8,20 @@ import numpy as np
 import os
 import uvicorn
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 try:
     kmeans_model = joblib.load('app/models/kmeans_model.joblib')
@@ -101,16 +106,22 @@ def process_data(df):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    try:
+        return {"message": "Hello World"}
+    except Exception as e:
+        logger.error(f"Error during prediction: {str(e)}")
 
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
-
+    try:
+        return {"status": "healthy"}
+    except Exception as e:
+        logger.error(f"Error during prediction: {str(e)}")
 
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(user_data: UserData):
+
     """
     Predice el cluster para un único datapoint basado en los datos del usuario.
 
@@ -135,10 +146,13 @@ async def predict(user_data: UserData):
     }
     ```
     """
-    df = pd.DataFrame([user_data.dict(by_alias=True)])
-    X_selected = process_data(df)
-    cluster = kmeans_model.predict(X_selected)[0]
-    return {"cluster": int(cluster)}
+    try:
+        df = pd.DataFrame([user_data.dict(by_alias=True)])
+        X_selected = process_data(df)
+        cluster = kmeans_model.predict(X_selected)[0]
+        return {"cluster": int(cluster)}
+    except Exception as e:
+        logger.error(f"Error during prediction: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
