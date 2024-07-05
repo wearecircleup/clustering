@@ -19,7 +19,8 @@ This project provides a RESTful API for customer segmentation using a pre-traine
 
 **Clone the Repository**
  ```bash
- git clone https://your-repository-url.git
+ git clone git@github.com:wearecircleup/clustering.git
+ git clone https://github.com/wearecircleup/clustering.git
  cd customer-segmentation-api
  ```
 
