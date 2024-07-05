@@ -4,6 +4,10 @@ import joblib
 from pydantic import BaseModel, Field
 from typing import List
 import numpy as np
+import os
+import uvicorn
+
+port = int(os.getenv("PORT", 8000))
 
 app = FastAPI()
 
@@ -121,4 +125,4 @@ async def predict(user_data: UserData):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("app.server:app", host="0.0.0.0", port=port, reload=True)
